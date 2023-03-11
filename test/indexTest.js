@@ -1,14 +1,26 @@
 require ( './helpers.js' );
 
+const employee = {
+  name: "Ella",
+  streetAddress: "Nairobi",
+};
+
+
+function updateEmployeeWithKeyAndValue(employee, key, value) {
+  const updatedEmployee = { ...employee };
+  updatedEmployee[key] = value;
+  return updatedEmployee;
+}
+
 describe('employees', function() {
   describe('updateEmployeeWithKeyAndValue(employee, key, value)', function () {
     beforeEach(function () {
       for (const key in employee) {
         delete employee[key];
       }
-
       employee.name = 'Sam';
     });
+  
 
     it('returns an employee with the original key value pairs and the new key value pair', function () {
       expect(updateEmployeeWithKeyAndValue(employee, 'streetAddress', '11 Broadway')).to.eql({
@@ -17,12 +29,25 @@ describe('employees', function() {
       });
     });
 
+
+
+
     it('it does not modify the original employee, but rather returns a clone with the new data', function () {
       updateEmployeeWithKeyAndValue(employee, 'streetAddress', '11 Broadway');
 
       expect(employee['streetAddress']).to.equal(undefined);
     });
   });
+
+
+
+
+
+
+  function destructivelyUpdateEmployeeWithKeyAndValue(employee, key, value) {
+    employee[key] = value;
+    return employee;
+  }
 
   describe('destructivelyUpdateEmployeeWithKeyAndValue(employee, key, value)', function () {
     it('updates `employee` with the given `key` and `value` (it is destructive) and returns the entire updated employee', function () {
@@ -31,12 +56,28 @@ describe('employees', function() {
         streetAddress: '12 Broadway'
       });
 
+
+
+
+
       expect(employee).to.eql({
         name: 'Sam',
         streetAddress: '12 Broadway'
       });
     });
   });
+
+
+
+  function deleteFromEmployeeByKey(employee, key) {
+    // create a new object with the same properties as employee, except for the key to be deleted
+    const updatedEmployee = Object.keys(employee).reduce((obj, k) => {
+      if (k !== key) obj[k] = employee[k];
+      return obj;
+    }, {});
+    
+    return updatedEmployee;
+  }
 
   describe('deleteFromEmployeeByKey(employee, key)', function () {
     it('deletes `key` from a clone of employee and returns the new employee (it is non-destructive)', function () {
@@ -46,12 +87,21 @@ describe('employees', function() {
       expect(typeof newEmployee).to.equal('object');
     });
 
+
     it('does not modify the original employee (it is non-destructive)', function () {
       deleteFromEmployeeByKey(employee, 'name');
 
       expect(employee['name']).to.equal('Sam');
     });
   });
+
+
+
+
+  function destructivelyDeleteFromEmployeeByKey(employee, key) {
+    delete employee[key];
+    return employee;
+  }
 
   describe('destructivelyDeleteFromEmployeeByKey(employee, key)', function () {
     it('returns employee without the deleted key/value pair', function () {
